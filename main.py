@@ -58,7 +58,7 @@ def load_model(model_path):
     return real_one
 
 
-model = load_model("traffic-sign-model")
+# model = load_model("traffic-sign-model")
 model_h5 = load_model("my_model.h5")
 
 
