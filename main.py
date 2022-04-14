@@ -2,7 +2,6 @@ import streamlit as st
 from PIL import Image
 import tensorflow
 import numpy as np
-import pickle
 
 classes = {0: 'Speed limit (20km/h)',
            1: 'Speed limit (30km/h)',
@@ -48,25 +47,19 @@ classes = {0: 'Speed limit (20km/h)',
            41: 'End of no passing',
            42: 'End no passing vehicle > 3.5 tons'}
 
-# def load_model(model_path):
-#     """
-#   Loads a saved model from a specified path.
-#   """
-#     print(f"Loading saved model from: {model_path}")
-#     real_one = tensorflow.keras.models.load_model(model_path)
-#     print("Finished loading the model.\n")
-#     return real_one
+
+def load_model(model_path):
+    """
+  Loads a saved model from a specified path.
+  """
+    print(f"Loading saved model from: {model_path}")
+    real_one = tensorflow.keras.models.load_model(model_path)
+    print("Finished loading the model.\n")
+    return real_one
 
 
-# model = load_model("traffic-sign-model")
-pickled_model = pickle.load(open("pkl_model.pkl", "rb"))
-
-def predict_pkl(img):
-    image = Image.open(img)
-    image = image.resize((30, 30))
-    data = [np.array(image)]
-    X_test = np.array(data)
-    return pickled_model.predict(X_test)
+model = load_model("traffic-sign-model")
+model_h5 = load_model("my_model.h5")
 
 
 def predict(img):
@@ -74,7 +67,7 @@ def predict(img):
     image = image.resize((30, 30))
     data = [np.array(image)]
     X_test = np.array(data)
-    return model.predict(X_test)
+    return model_h5.predict(X_test)
 
 
 def load_image(image):
@@ -94,7 +87,7 @@ if image_file is not None:
     st.write(f"File type: {file_details['file_type']}")
     st.image(load_image(image_file), width=250)
 
-    predictions = predict_pkl(image_file)
+    predictions = predict(image_file)
     listed_predictions = predictions.flatten().tolist()
     max_prediction_index = np.argmax(listed_predictions)
     st.write(classes[max_prediction_index])
